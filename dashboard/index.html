@@ -52,6 +52,71 @@
       background: #5f72ff;
     }
   </style>
+  .profile-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.profile-pic {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #4255ff;
+}
+
+.dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: #11141b;
+  border: 1px solid #222;
+  border-radius: 8px;
+  width: 220px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  padding: 10px 0;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: #1a1d26;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #333;
+  margin: 8px 0;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  background: #ff3b3b;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.logout-btn:hover {
+  background: #ff5555;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 </head>
 
 <body>
@@ -64,4 +129,15 @@
 
   <script type="module" src="dashboard.js"></script>
 </body>
+
+  <div class="profile-container">
+  <img id="profilePic" class="profile-pic" src="" alt="Profile">
+  <div class="dropdown" id="dropdownMenu">
+    <div class="dropdown-item" id="userName"></div>
+    <div class="dropdown-item" id="userEmail"></div>
+    <div class="dropdown-divider"></div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
 </html>
