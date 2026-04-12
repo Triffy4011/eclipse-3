@@ -3,8 +3,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js";
 const SUPABASE_URL = "YOUR_SUPABASE_URL";
 const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const client = createClient(https://fjkybogixlqecziuxfui.supabase.co, sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_);
 
+// -----------------------------
+// OWNER AUTH CHECK
+// -----------------------------
 async function checkOwner() {
   const securityStatus = document.getElementById("securityStatus");
   const ownerNameEl = document.getElementById("ownerName");
@@ -15,7 +18,7 @@ async function checkOwner() {
 
   if (sessionError || !session) {
     securityStatus.textContent = "No session found. Redirecting to login…";
-    window.location.href = "../index.html"; // LOGIN PAGE
+    window.location.href = "../index.html";
     return;
   }
 
@@ -29,7 +32,7 @@ async function checkOwner() {
 
   if (profileError || !profile) {
     securityStatus.textContent = "No profile found. Redirecting…";
-    window.location.href = "index.html"; // DASHBOARD
+    window.location.href = "index.html";
     return;
   }
 
@@ -39,11 +42,14 @@ async function checkOwner() {
 
   if (profile.role !== "Owner") {
     securityStatus.textContent = "You are not Owner. Redirecting…";
-    window.location.href = "index.html"; // DASHBOARD
+    window.location.href = "index.html";
     return;
   }
 
   securityStatus.textContent = "Access granted. You have full Owner permissions.";
+
+  // ⭐ Load Phase B UI
+  loadRoles();
 }
 
 checkOwner();
@@ -51,7 +57,6 @@ checkOwner();
 // -----------------------------
 // ROLE MANAGER (PHASE B)
 // -----------------------------
-
 async function loadRoles() {
   const rolesList = document.getElementById("rolesList");
 
@@ -94,6 +99,7 @@ async function loadRoles() {
 
 window.loadRoles = loadRoles;
 
+// CREATE ROLE
 async function createRole() {
   const name = prompt("Enter new role name:");
 
@@ -113,6 +119,7 @@ async function createRole() {
 
 document.getElementById("createRoleBtn").onclick = createRole;
 
+// DELETE ROLE
 async function deleteRole(id) {
   if (!confirm("Delete this role?")) return;
 
@@ -131,6 +138,7 @@ async function deleteRole(id) {
 
 window.deleteRole = deleteRole;
 
+// EDIT ROLE
 async function editRole(id) {
   const newPerms = prompt("Enter permissions as JSON (example: {\"canBan\":true}):");
 
@@ -158,4 +166,3 @@ async function editRole(id) {
 }
 
 window.editRole = editRole;
-
