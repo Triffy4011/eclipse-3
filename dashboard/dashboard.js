@@ -9,7 +9,6 @@ const client = createClient(
 async function loadUser() {
   const { data: { session } } = await client.auth.getSession();
 
-  // If no session, redirect to login
   if (!session) {
     window.location.href = "../index.html";
     return;
@@ -17,15 +16,12 @@ async function loadUser() {
 
   const user = session.user;
 
-  // Update main box info
   document.getElementById("userInfo").innerText =
     `${user.user_metadata.full_name}\n${user.email}`;
 
-  // Update dropdown info
   document.getElementById("userName").innerText = user.user_metadata.full_name;
   document.getElementById("userEmail").innerText = user.email;
 
-  // Update profile picture
   document.getElementById("profilePic").src = user.user_metadata.avatar_url;
 
   setupDropdown();
@@ -36,12 +32,10 @@ function setupDropdown() {
   const profilePic = document.getElementById("profilePic");
   const dropdown = document.getElementById("dropdownMenu");
 
-  // Toggle dropdown
   profilePic.addEventListener("click", () => {
     dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!profilePic.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.style.display = "none";
@@ -49,20 +43,10 @@ function setupDropdown() {
   });
 }
 
-// Sidebar collapse logic
-window.toggleSidebar = function () {
-  const sidebar = document.getElementById("sidebar");
-  const body = document.body;
-
-  sidebar.classList.toggle("collapsed");
-  body.classList.toggle("collapsed");
-};
-
-// Logout function
+// Logout
 export async function logout() {
   await client.auth.signOut();
   window.location.href = "../index.html";
 }
 
-// Run on page load
 loadUser();
