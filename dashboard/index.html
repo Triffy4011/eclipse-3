@@ -14,8 +14,10 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      transition: margin-left 0.25s ease;
     }
 
+    /* MAIN BOX */
     .box {
       background: #11141b;
       padding: 40px;
@@ -34,6 +36,7 @@
       margin-top: 15px;
       font-size: 16px;
       color: #a0a4b8;
+      white-space: pre-line;
     }
 
     button {
@@ -52,11 +55,81 @@
       background: #5f72ff;
     }
 
-    /* PROFILE DROPDOWN CSS */
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 230px;
+      height: 100vh;
+      background: #11141b;
+      border-right: 1px solid #222;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.25s ease;
+      z-index: 10;
+    }
+
+    .sidebar.collapsed {
+      width: 70px;
+    }
+
+    .sidebar-title {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .sidebar-item {
+      padding: 12px 20px;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 15px;
+      display: block;
+    }
+
+    .sidebar-item:hover {
+      background: #1a1d26;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .sidebar-collapse {
+      width: 100%;
+      padding: 10px;
+      background: #222;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .sidebar-collapse:hover {
+      background: #333;
+    }
+
+    /* SHIFT MAIN CONTENT */
+    body.with-sidebar .box {
+      margin-left: 230px;
+    }
+
+    body.with-sidebar.collapsed .box {
+      margin-left: 70px;
+    }
+
+    /* PROFILE DROPDOWN */
     .profile-container {
       position: absolute;
       top: 20px;
       right: 20px;
+      z-index: 20;
     }
 
     .profile-pic {
@@ -120,7 +193,21 @@
   </style>
 </head>
 
-<body>
+<body class="with-sidebar">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-title">Eclipse 3.0</div>
+
+    <a class="sidebar-item" href="#">Home</a>
+    <a class="sidebar-item" href="#">VIP</a>
+    <a class="sidebar-item" href="#">Admin</a>
+    <a class="sidebar-item" href="#">Settings</a>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-collapse" onclick="toggleSidebar()">⮜</button>
+    </div>
+  </div>
 
   <!-- PROFILE DROPDOWN -->
   <div class="profile-container">
