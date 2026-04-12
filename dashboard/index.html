@@ -57,7 +57,6 @@
       background: #5f72ff;
     }
 
-    /* SIDEBAR */
     .sidebar {
       position: fixed;
       top: 0;
@@ -79,7 +78,6 @@
       width: 230px;
     }
 
-    /* LOGO */
     .sidebar-logo {
       width: 48px;
       height: 48px;
@@ -93,7 +91,6 @@
       transform: scale(1.08);
     }
 
-    /* TITLE */
     .sidebar-title {
       color: #fff;
       font-size: 18px;
@@ -107,7 +104,6 @@
       opacity: 1;
     }
 
-    /* NAV ITEMS */
     .sidebar-item {
       width: 100%;
       padding: 12px 0;
@@ -121,7 +117,6 @@
       transition: background 0.2s ease;
     }
 
-    /* ICONS */
     .sidebar-item i {
       font-size: 20px;
       width: 25px;
@@ -137,7 +132,6 @@
       background: #1a1d26;
     }
 
-    /* TEXT LABELS */
     .sidebar-text {
       position: absolute;
       left: 90px;
@@ -152,7 +146,6 @@
       transform: translateX(0);
     }
 
-    /* SHIFT MAIN CONTENT */
     body.with-sidebar .box {
       margin-left: 90px;
     }
@@ -161,7 +154,6 @@
       margin-left: 250px;
     }
 
-    /* PROFILE DROPDOWN */
     .profile-container {
       position: absolute;
       top: 20px;
@@ -234,7 +226,6 @@
 
   <div class="sidebar">
     <img src="images/eclipse-logo.png" class="sidebar-logo" alt="Eclipse Logo">
-
     <div class="sidebar-title">Eclipse 3.0</div>
 
     <a class="sidebar-item" id="nav-home" href="#">
@@ -255,6 +246,11 @@
     <a class="sidebar-item" id="nav-settings" href="#">
       <i class="fa-solid fa-gear"></i>
       <span class="sidebar-text">Settings</span>
+    </a>
+
+    <a class="sidebar-item" id="nav-owner" href="owner.html">
+      <i class="fa-solid fa-crown"></i>
+      <span class="sidebar-text">Owner Panel</span>
     </a>
   </div>
 
