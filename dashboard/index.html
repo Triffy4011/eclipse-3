@@ -116,25 +116,32 @@
       font-size: 15px;
       display: flex;
       align-items: center;
-      justify-content: center; /* ICON CENTERED ALWAYS */
+      justify-content: center;
       position: relative;
       transition: background 0.2s ease;
     }
 
+    /* ICONS */
     .sidebar-item i {
       font-size: 20px;
       width: 25px;
       text-align: center;
+      transition: opacity 0.2s ease;
+    }
+
+    /* ICONS DISAPPEAR WHEN EXPANDED */
+    .sidebar:hover .sidebar-item i {
+      opacity: 0;
     }
 
     .sidebar-item:hover {
       background: #1a1d26;
     }
 
-    /* TEXT LABELS — FIXED LANE, NO OVERLAP */
+    /* TEXT LABELS */
     .sidebar-text {
       position: absolute;
-      left: 90px; /* NORMAL SPACING (Option 1) */
+      left: 90px;
       opacity: 0;
       white-space: nowrap;
       transform: translateX(10px);
