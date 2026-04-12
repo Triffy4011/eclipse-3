@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Eclipse 3.0 – Dashboard</title>
 
-  <!-- ICONS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -20,7 +19,6 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* MAIN BOX */
     .box {
       background: #11141b;
       padding: 40px;
@@ -118,7 +116,7 @@
       font-size: 15px;
       display: flex;
       align-items: center;
-      justify-content: center; /* ICON CENTERED */
+      justify-content: center; /* ICON CENTERED ALWAYS */
       position: relative;
       transition: background 0.2s ease;
     }
@@ -133,10 +131,10 @@
       background: #1a1d26;
     }
 
-    /* TEXT LABELS — FIXED VERSION */
+    /* TEXT LABELS — FIXED LANE, NO OVERLAP */
     .sidebar-text {
       position: absolute;
-      left: 90px; /* OUTSIDE icon zone */
+      left: 90px; /* NORMAL SPACING (Option 1) */
       opacity: 0;
       white-space: nowrap;
       transform: translateX(10px);
@@ -228,10 +226,7 @@
 
 <body class="with-sidebar">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
-
-    <!-- YOUR LOGO -->
     <img src="images/eclipse-logo.png" class="sidebar-logo" alt="Eclipse Logo">
 
     <div class="sidebar-title">Eclipse 3.0</div>
@@ -248,7 +243,7 @@
 
     <a class="sidebar-item" href="#">
       <i class="fa-solid fa-shield-halved"></i>
-      <span class="sidebar-text">Admin</span>
+      <span class="sidebar-text">AddOn</span>
     </a>
 
     <a class="sidebar-item" href="#">
@@ -257,7 +252,6 @@
     </a>
   </div>
 
-  <!-- PROFILE DROPDOWN -->
   <div class="profile-container">
     <img id="profilePic" class="profile-pic" src="" alt="Profile">
     <div class="dropdown" id="dropdownMenu">
@@ -268,7 +262,6 @@
     </div>
   </div>
 
-  <!-- MAIN BOX -->
   <div class="box">
     <div class="title">Welcome to Eclipse 3.0</div>
     <div id="userInfo">Loading user...</div>
