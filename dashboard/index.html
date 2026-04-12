@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Eclipse 3.0 – Dashboard</title>
 
+  <!-- ICONS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     body {
       margin: 0;
@@ -25,6 +28,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      transition: margin-left 0.25s ease;
     }
 
     .title {
@@ -60,7 +64,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 230px;
+      width: 70px;
       height: 100vh;
       background: #11141b;
       border-right: 1px solid #222;
@@ -69,10 +73,11 @@
       flex-direction: column;
       transition: width 0.25s ease;
       z-index: 10;
+      overflow: hidden;
     }
 
-    .sidebar.collapsed {
-      width: 70px;
+    .sidebar:hover {
+      width: 230px;
     }
 
     .sidebar-title {
@@ -81,6 +86,12 @@
       font-weight: bold;
       text-align: center;
       margin-bottom: 25px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .sidebar:hover .sidebar-title {
+      opacity: 1;
     }
 
     .sidebar-item {
@@ -88,40 +99,38 @@
       color: #ccc;
       text-decoration: none;
       font-size: 15px;
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .sidebar-item i {
+      font-size: 18px;
+      width: 25px;
+      text-align: center;
     }
 
     .sidebar-item:hover {
       background: #1a1d26;
     }
 
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 10px;
-      text-align: center;
+    .sidebar-text {
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
 
-    .sidebar-collapse {
-      width: 100%;
-      padding: 10px;
-      background: #222;
-      border: none;
-      color: #ccc;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-
-    .sidebar-collapse:hover {
-      background: #333;
+    .sidebar:hover .sidebar-text {
+      opacity: 1;
     }
 
     /* SHIFT MAIN CONTENT */
     body.with-sidebar .box {
-      margin-left: 230px;
+      margin-left: 70px;
     }
 
-    body.with-sidebar.collapsed .box {
-      margin-left: 70px;
+    body.with-sidebar:hover .box {
+      margin-left: 230px;
     }
 
     /* PROFILE DROPDOWN */
@@ -196,17 +205,28 @@
 <body class="with-sidebar">
 
   <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar">
     <div class="sidebar-title">Eclipse 3.0</div>
 
-    <a class="sidebar-item" href="#">Home</a>
-    <a class="sidebar-item" href="#">VIP</a>
-    <a class="sidebar-item" href="#">Admin</a>
-    <a class="sidebar-item" href="#">Settings</a>
+    <a class="sidebar-item" href="#">
+      <i class="fa-solid fa-house"></i>
+      <span class="sidebar-text">Home</span>
+    </a>
 
-    <div class="sidebar-footer">
-      <button class="sidebar-collapse" onclick="toggleSidebar()">⮜</button>
-    </div>
+    <a class="sidebar-item" href="#">
+      <i class="fa-solid fa-star"></i>
+      <span class="sidebar-text">VIP</span>
+    </a>
+
+    <a class="sidebar-item" href="#">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span class="sidebar-text">Admin</span>
+    </a>
+
+    <a class="sidebar-item" href="#">
+      <i class="fa-solid fa-gear"></i>
+      <span class="sidebar-text">Settings</span>
+    </a>
   </div>
 
   <!-- PROFILE DROPDOWN -->
