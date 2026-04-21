@@ -87,11 +87,17 @@ document.getElementById("logoutBtn2")?.addEventListener("click", async () => {
     window.location.href = "../index.html";
 });
 
-// Wait for auth to be ready before initializing
-client.auth.onAuthStateChange(async (event, session) => {
-    if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+// Wait for auth to initialize then run dashboard
+async function start() {
+    // Give Supabase time to process any OAuth token in the URL
+    const { data: { session } } = await client.auth.getSession();
+    
+    if (session) {
         await initDashboard();
-    } else if (event === "SIGNED_OUT") {
-        window.location.href = "signin.html";
+    } else {
+        // No session found, redirect to login
+        window.location.href = "../index.html";
     }
-});
+}
+
+start();
