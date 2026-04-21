@@ -17,6 +17,9 @@ async function checkOwner() {
 
   const { data: { session }, error: sessionError } = await client.auth.getSession();
 
+  console.log("Session:", session);
+  console.log("Session error:", sessionError);
+
   if (sessionError || !session) {
     securityStatus.textContent = "No session found. Redirecting to login…";
     window.location.href = "../index.html";
@@ -24,12 +27,16 @@ async function checkOwner() {
   }
 
   const user = session.user;
+  console.log("User ID:", user.id);
 
   const { data: profile, error: profileError } = await client
     .from("profiles")
     .select("role, full_name")
     .eq("id", user.id)
     .single();
+
+  console.log("Profile:", profile);
+  console.log("Profile error:", profileError);
 
   if (profileError || !profile) {
     securityStatus.textContent = "No profile found. Redirecting…";
@@ -41,6 +48,8 @@ async function checkOwner() {
     ownerNameEl.textContent = profile.full_name;
   }
 
+  console.log("Role check:", profile.role, "!== owner ?", profile.role !== "owner");
+
   if (profile.role !== "owner") {
     securityStatus.textContent = "You are not Owner. Redirecting…";
     window.location.href = "index.html";
@@ -48,8 +57,6 @@ async function checkOwner() {
   }
 
   securityStatus.textContent = "Access granted. You have full Owner permissions.";
-
-  // ⭐ Load Phase B UI
   loadRoles();
 }
 
