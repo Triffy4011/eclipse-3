@@ -1,0 +1,382 @@
+/* Floating Widget Button */
+#siteEditorWidget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 55px;
+  height: 55px;
+  background: #4255ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 0 20px rgba(66, 85, 255, 0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#siteEditorWidget:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(66, 85, 255, 0.8);
+}
+
+#siteEditorWidget i {
+  color: white;
+  font-size: 22px;
+}
+
+/* Editor Panel */
+#siteEditorPanel {
+  position: fixed;
+  top: 0;
+  right: -600px;
+  width: 580px;
+  height: 100vh;
+  background: #11141b;
+  border-left: 1px solid #222;
+  z-index: 9998;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#siteEditorPanel.open {
+  right: 0;
+}
+
+.editor-header {
+  padding: 20px;
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0d0f14;
+}
+
+.editor-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: white;
+}
+
+.editor-close {
+  background: none;
+  border: none;
+  color: #a0a4b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 0;
+}
+
+.editor-close:hover {
+  color: white;
+  background: none;
+}
+
+.editor-tabs {
+  display: flex;
+  border-bottom: 1px solid #222;
+}
+
+.editor-tab {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  color: #a0a4b8;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  background: none;
+  border-radius: 0;
+  margin-top: 0;
+}
+
+.editor-tab:hover {
+  color: white;
+  background: #1a1d26;
+}
+
+.editor-tab.active {
+  color: #4255ff;
+  border-bottom: 2px solid #4255ff;
+  background: none;
+}
+
+.editor-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Category Cards */
+.category-card {
+  background: #1a1d26;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  cursor: grab;
+  border: 1px solid #222;
+  transition: border-color 0.2s;
+}
+
+.category-card:hover {
+  border-color: #4255ff;
+}
+
+.category-card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-small {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 0;
+}
+
+.btn-edit {
+  background: #4255ff33;
+  color: #c5cbff;
+}
+
+.btn-edit:hover {
+  background: #4255ff;
+  color: white;
+}
+
+.btn-delete {
+  background: #ff444433;
+  color: #ff9999;
+}
+
+.btn-delete:hover {
+  background: #ff4444;
+  color: white;
+}
+
+.btn-primary {
+  background: #4255ff;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 0;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #5f72ff;
+}
+
+/* Links list inside category */
+.links-list {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #222;
+  display: none;
+}
+
+.links-list.open {
+  display: block;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #0d0f14;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: grab;
+}
+
+.link-item:hover {
+  background: #151820;
+}
+
+.link-name {
+  font-size: 13px;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-url {
+  font-size: 11px;
+  color: #a0a4b8;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Modal */
+.editor-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor-modal-overlay.open {
+  display: flex;
+}
+
+.editor-modal {
+  background: #11141b;
+  border-radius: 12px;
+  padding: 30px;
+  width: 460px;
+  border: 1px solid #222;
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+.editor-modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #a0a4b8;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  background: #0d0f14;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4255ff;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  background: #1a1d26;
+  color: #a0a4b8;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.btn-cancel:hover {
+  background: #222;
+  color: white;
+}
+
+/* Drop zone for URLs */
+.url-dropzone {
+  border: 2px dashed #333;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #a0a4b8;
+  font-size: 13px;
+  margin-bottom: 15px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.url-dropzone.dragover {
+  border-color: #4255ff;
+  background: #4255ff11;
+  color: white;
+}
+
+/* Role badges */
+.role-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.role-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s;
+}
+
+.role-badge:hover {
+  transform: scale(1.05);
+}
+
+.role-badge.owner { background: #ff444433; color: #ff9999; }
+.role-badge.admin { background: #ff880033; color: #ffbb77; }
+.role-badge.mod { background: #4255ff33; color: #c5cbff; }
+.role-badge.vip { background: #a855f733; color: #d8b4fe; }
+.role-badge.basic { background: #22222233; color: #aaaaaa; }
+.role-badge.visitor { background: #11111133; color: #888888; }
+
+.visibility-indicator {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #4255ff22;
+  color: #c5cbff;
+  margin-left: 8px;
+}
