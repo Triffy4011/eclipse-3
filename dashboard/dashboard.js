@@ -42,10 +42,11 @@ async function initDashboard() {
         return;
     }
 
-    // 5. Populate UI
-    userNameEl.textContent = profile.full_name || "User";
-    userEmailEl.textContent = user.email;
-
+ // 5. Populate UI
+document.getElementById("userInfo").textContent = `Welcome, ${profile.full_name || "User"}!`;
+userNameEl.textContent = profile.full_name || "User";
+userEmailEl.textContent = user.email;
+    
     if (profile.avatar_url) {
         profilePicEl.src = profile.avatar_url;
         if (avatarEl) avatarEl.src = profile.avatar_url;
@@ -76,10 +77,14 @@ if (profilePicEl && dropdownMenu) {
     });
 }
 
-// Sign Out
-document.getElementById("signOut")?.addEventListener("click", async () => {
+// Logout buttons
+document.getElementById("logoutBtn")?.addEventListener("click", async () => {
     await client.auth.signOut();
-    window.location.href = "signin.html";
+    window.location.href = "../index.html";
+});
+document.getElementById("logoutBtn2")?.addEventListener("click", async () => {
+    await client.auth.signOut();
+    window.location.href = "../index.html";
 });
 
 // Wait for auth to be ready before initializing
