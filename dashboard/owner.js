@@ -41,7 +41,7 @@ async function checkOwner() {
     ownerNameEl.textContent = profile.full_name;
   }
 
-  if (profile.role !== "Owner") {
+  if (profile.role !== "owner") {
     securityStatus.textContent = "You are not Owner. Redirecting…";
     window.location.href = "index.html";
     return;
