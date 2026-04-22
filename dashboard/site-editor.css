@@ -368,9 +368,10 @@
 .role-badge.owner { background: #ff444433; color: #ff9999; }
 .role-badge.admin { background: #ff880033; color: #ffbb77; }
 .role-badge.mod { background: #4255ff33; color: #c5cbff; }
+.role-badge.jr-mod { background: #84ff0033; color: #ccff66; }
 .role-badge.vip { background: #a855f733; color: #d8b4fe; }
-.role-badge.basic { background: #22222233; color: #aaaaaa; }
-.role-badge.visitor { background: #11111133; color: #888888; }
+.role-badge.basic { background: #55555533; color: #999999; }
+.role-badge.visitor { background: transparent; color: #888888; border: 1px solid #888888; }
 
 .visibility-indicator {
   font-size: 11px;
