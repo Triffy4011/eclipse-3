@@ -15,8 +15,18 @@ const navVIP = document.getElementById("nav-vip");
 const navAdmin = document.getElementById("nav-addon");
 const navOwner = document.getElementById("nav-owner");
 
+// Role colors — matches your role setup
+const ROLE_COLORS = {
+  "owner":   "#ff4444",
+  "admin":   "#ff8800",
+  "mod":     "#4255ff",
+  "jr-mod":  "#84ff00",
+  "vip":     "#a855f7",
+  "basic":   "#aaaaaa",
+  "visitor": "#888888",
+};
+
 async function initDashboard() {
-    // 1. Check if user is logged in
     const { data: { session } } = await client.auth.getSession();
     if (!session) {
         window.location.href = "../index.html";
@@ -24,39 +34,57 @@ async function initDashboard() {
     }
     const user = session.user;
 
-    // 2. Hide ALL role-gated nav items by default
+    // Hide ALL role-gated nav items by default
     navVIP?.classList.add("hidden");
     navAdmin?.classList.add("hidden");
     navOwner?.classList.add("hidden");
 
-    // 3. Fetch profile data
+    // Fetch profile data
     const { data: profile, error: profileError } = await client
         .from("profiles")
         .select("role, full_name, avatar_url")
         .eq("id", user.id)
         .single();
 
-    // 4. If profile fetch fails, treat as unauthorized
     if (profileError || !profile) {
         console.error("Profile fetch failed:", profileError);
         window.location.href = "../index.html";
         return;
     }
 
-    // 5. Populate UI
+    const role = profile.role;
+    const roleColor = ROLE_COLORS[role] || "#ffffff";
+
+    // Populate UI
     const userInfoEl = document.getElementById("userInfo");
     if (userInfoEl) userInfoEl.textContent = `Welcome, ${profile.full_name || "User"}!`;
-    if (userNameEl) userNameEl.textContent = profile.full_name || "User";
+
+    // Set username with role color
+    if (userNameEl) {
+        userNameEl.textContent = profile.full_name || "User";
+        userNameEl.style.color = roleColor;
+        userNameEl.style.fontWeight = "bold";
+    }
+
     if (userEmailEl) userEmailEl.textContent = user.email;
 
+    // Add role badge under name in dropdown
+    const roleTag = document.getElementById("userRoleTag");
+    if (roleTag) {
+        roleTag.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+        roleTag.style.color = roleColor;
+        roleTag.style.border = `1px solid ${roleColor}`;
+    }
+
     if (profile.avatar_url) {
-        if (profilePicEl) profilePicEl.src = profile.avatar_url;
+        if (profilePicEl) {
+            profilePicEl.src = profile.avatar_url;
+            profilePicEl.style.borderColor = roleColor;
+        }
         if (avatarEl) avatarEl.src = profile.avatar_url;
     }
 
-    // 6. Show nav items based on role
-    const role = profile.role;
-
+    // Show nav items based on role
     if (["vip", "jr-mod", "mod", "admin", "owner"].includes(role)) {
         navVIP?.classList.remove("hidden");
     }
