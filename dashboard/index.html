@@ -5,6 +5,8 @@
   <title>Eclipse 3.0 – Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    .hidden { display: none !important; }
+
     body {
       margin: 0;
       background: #0d0f14;
@@ -47,6 +49,7 @@
       font-weight: bold;
     }
     button:hover { background: #5f72ff; }
+
     .sidebar {
       position: fixed;
       top: 0;
@@ -113,8 +116,9 @@
     .sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
     body.with-sidebar .box { margin-left: 90px; }
     .sidebar:hover ~ .box { margin-left: 250px; }
+
     .profile-container {
-      position: absolute;
+      position: fixed;
       top: 20px;
       right: 20px;
       z-index: 20;
@@ -156,6 +160,7 @@
       font-weight: bold;
       cursor: pointer;
       border-radius: 6px;
+      margin-top: 0;
     }
     .logout-btn:hover { background: #ff5555; }
     @keyframes fadeIn {
@@ -176,13 +181,12 @@
       <span class="sidebar-text">Home</span>
     </a>
 
-    <!-- Hidden by default — JS will show based on role -->
-    <a class="sidebar-item" id="nav-vip" href="#" style="display:none">
+    <a class="sidebar-item hidden" id="nav-vip" href="#">
       <i class="fa-solid fa-star"></i>
       <span class="sidebar-text">VIP</span>
     </a>
 
-    <a class="sidebar-item" id="nav-addon" href="#" style="display:none">
+    <a class="sidebar-item hidden" id="nav-addon" href="#">
       <i class="fa-solid fa-shield-halved"></i>
       <span class="sidebar-text">Admin</span>
     </a>
@@ -192,7 +196,7 @@
       <span class="sidebar-text">Settings</span>
     </a>
 
-    <a class="sidebar-item" id="nav-owner" href="owner.html" style="display:none">
+    <a class="sidebar-item hidden" id="nav-owner" href="owner.html">
       <i class="fa-solid fa-crown"></i>
       <span class="sidebar-text">Owner Panel</span>
     </a>
@@ -214,12 +218,11 @@
     <button id="logoutBtn2">Log Out</button>
   </div>
 
-<script type="module" src="dashboard.js?v=999999"></script>
-<script type="module">
-  
-  import { initSiteEditor } from "./site-editor.js";
-  initSiteEditor();
-</script>
-  
+  <script type="module" src="dashboard.js?v=999999"></script>
+  <script type="module">
+    import { initSiteEditor } from "./site-editor.js";
+    initSiteEditor();
+  </script>
+
 </body>
 </html>
