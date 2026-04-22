@@ -2,13 +2,19 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const SUPABASE_URL = "https://fjkybogixlqecziuxfui.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_";
-
 const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// All available permissions with friendly labels
+const PERMISSIONS = [
+  { key: "canBan",             label: "Ban Members",        icon: "fa-ban" },
+  { key: "canMute",            label: "Mute Members",       icon: "fa-microphone-slash" },
+  { key: "canManageLinks",     label: "Manage Links",       icon: "fa-link" },
+  { key: "canManageRoles",     label: "Manage Roles",       icon: "fa-shield-halved" },
+  { key: "canManageUsers",     label: "Manage Users",       icon: "fa-users" },
+  { key: "canManageEverything",label: "Full Access",        icon: "fa-crown" },
+];
 
-// -----------------------------
-// OWNER AUTH CHECK
-// -----------------------------
+// ─── OWNER AUTH CHECK ───────────────────────────────────
 async function checkOwner() {
   const securityStatus = document.getElementById("securityStatus");
   const ownerNameEl = document.getElementById("ownerName");
@@ -17,9 +23,6 @@ async function checkOwner() {
 
   const { data: { session }, error: sessionError } = await client.auth.getSession();
 
-  console.log("Session:", session);
-  console.log("Session error:", sessionError);
-
   if (sessionError || !session) {
     securityStatus.textContent = "No session found. Redirecting to login…";
     window.location.href = "../index.html";
@@ -27,16 +30,12 @@ async function checkOwner() {
   }
 
   const user = session.user;
-  console.log("User ID:", user.id);
 
   const { data: profile, error: profileError } = await client
     .from("profiles")
     .select("role, full_name")
     .eq("id", user.id)
     .single();
-
-  console.log("Profile:", profile);
-  console.log("Profile error:", profileError);
 
   if (profileError || !profile) {
     securityStatus.textContent = "No profile found. Redirecting…";
@@ -47,8 +46,6 @@ async function checkOwner() {
   if (ownerNameEl && profile.full_name) {
     ownerNameEl.textContent = profile.full_name;
   }
-
-  console.log("Role check:", profile.role, "!== owner ?", profile.role !== "owner");
 
   if (profile.role !== "owner") {
     securityStatus.textContent = "You are not Owner. Redirecting…";
@@ -62,9 +59,7 @@ async function checkOwner() {
 
 checkOwner();
 
-// -----------------------------
-// ROLE MANAGER (PHASE B)
-// -----------------------------
+// ─── LOAD ROLES ─────────────────────────────────────────
 async function loadRoles() {
   const rolesList = document.getElementById("rolesList");
 
@@ -74,43 +69,108 @@ async function loadRoles() {
     .order("name", { ascending: true });
 
   if (error) {
-    rolesList.innerHTML = "Error loading roles.";
+    rolesList.innerHTML = "<p style='color:#ff6b6b'>Error loading roles.</p>";
     return;
   }
 
-  let html = `
-    <table style="width:100%; border-collapse:collapse;">
-      <tr style="background:#222;">
-        <th style="padding:10px; text-align:left;">Role</th>
-        <th style="padding:10px; text-align:left;">Permissions</th>
-        <th style="padding:10px;">Actions</th>
-      </tr>
-  `;
+  rolesList.innerHTML = roles.map(role => renderRoleCard(role)).join("");
 
-  roles.forEach(role => {
-    html += `
-      <tr style="border-bottom:1px solid #333;">
-        <td style="padding:10px;">${role.name}</td>
-        <td style="padding:10px; color:#a0a4b8;">${JSON.stringify(role.permissions)}</td>
-        <td style="padding:10px;">
-          <button onclick="editRole('${role.id}')" style="padding:6px 10px;">Edit</button>
-          <button onclick="deleteRole('${role.id}')" style="padding:6px 10px; background:#ff4444; color:white;">Delete</button>
-        </td>
-      </tr>
-    `;
+  // Bind toggle events
+  rolesList.querySelectorAll(".perm-toggle").forEach(toggle => {
+    toggle.addEventListener("change", async (e) => {
+      const roleId = e.target.dataset.roleId;
+      const permKey = e.target.dataset.perm;
+      const checked = e.target.checked;
+      await updatePermission(roleId, permKey, checked);
+    });
   });
-
-  html += "</table>";
-
-  rolesList.innerHTML = html;
 }
 
-window.loadRoles = loadRoles;
+// ─── RENDER ROLE CARD ───────────────────────────────────
+function renderRoleCard(role) {
+  const perms = role.permissions || {};
 
-// CREATE ROLE
+  const togglesHTML = PERMISSIONS.map(p => `
+    <div class="perm-row">
+      <div class="perm-label">
+        <i class="fa-solid ${p.icon}"></i>
+        <span>${p.label}</span>
+      </div>
+      <label class="toggle-switch">
+        <input 
+          type="checkbox" 
+          class="perm-toggle"
+          data-role-id="${role.id}"
+          data-perm="${p.key}"
+          ${perms[p.key] ? "checked" : ""}
+          ${role.name === "Owner" ? "disabled" : ""}
+        >
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  `).join("");
+
+  return `
+    <div class="role-card" id="role-${role.id}">
+      <div class="role-card-header">
+        <div class="role-card-title">${getRoleIcon(role.name)} ${role.name}</div>
+        <div class="role-card-actions">
+          ${role.name !== "Owner" ? `
+            <button class="btn-danger-small" onclick="deleteRole('${role.id}', '${role.name}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          ` : ""}
+        </div>
+      </div>
+      <div class="perm-grid">
+        ${togglesHTML}
+      </div>
+    </div>
+  `;
+}
+
+function getRoleIcon(name) {
+  const icons = {
+    "Owner": "👑",
+    "Admin": "🛡️",
+    "Mod": "⚔️",
+    "Jr. Mod": "🔨",
+    "VIP": "⭐",
+    "Basic": "⬤",
+    "Visitor": "○",
+  };
+  return icons[name] || "🔵";
+}
+
+// ─── UPDATE PERMISSION ──────────────────────────────────
+async function updatePermission(roleId, permKey, value) {
+  // Get current permissions
+  const { data: role } = await client
+    .from("roles")
+    .select("permissions")
+    .eq("id", roleId)
+    .single();
+
+  const updated = { ...(role?.permissions || {}), [permKey]: value };
+
+  const { error } = await client
+    .from("roles")
+    .update({ permissions: updated })
+    .eq("id", roleId);
+
+  if (error) {
+    alert("Failed to update permission.");
+    // Revert toggle visually
+    const toggle = document.querySelector(
+      `.perm-toggle[data-role-id="${roleId}"][data-perm="${permKey}"]`
+    );
+    if (toggle) toggle.checked = !value;
+  }
+}
+
+// ─── CREATE ROLE ────────────────────────────────────────
 async function createRole() {
   const name = prompt("Enter new role name:");
-
   if (!name) return;
 
   const { error } = await client
@@ -118,7 +178,7 @@ async function createRole() {
     .insert({ name, permissions: {} });
 
   if (error) {
-    alert("Error creating role.");
+    alert("Error creating role: " + error.message);
     return;
   }
 
@@ -127,9 +187,9 @@ async function createRole() {
 
 document.getElementById("createRoleBtn").onclick = createRole;
 
-// DELETE ROLE
-async function deleteRole(id) {
-  if (!confirm("Delete this role?")) return;
+// ─── DELETE ROLE ────────────────────────────────────────
+async function deleteRole(id, name) {
+  if (!confirm(`Delete the "${name}" role?`)) return;
 
   const { error } = await client
     .from("roles")
@@ -145,32 +205,3 @@ async function deleteRole(id) {
 }
 
 window.deleteRole = deleteRole;
-
-// EDIT ROLE
-async function editRole(id) {
-  const newPerms = prompt("Enter permissions as JSON (example: {\"canBan\":true}):");
-
-  if (!newPerms) return;
-
-  let parsed;
-  try {
-    parsed = JSON.parse(newPerms);
-  } catch {
-    alert("Invalid JSON.");
-    return;
-  }
-
-  const { error } = await client
-    .from("roles")
-    .update({ permissions: parsed })
-    .eq("id", id);
-
-  if (error) {
-    alert("Error updating role.");
-    return;
-  }
-
-  loadRoles();
-}
-
-window.editRole = editRole;
