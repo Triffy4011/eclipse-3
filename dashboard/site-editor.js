@@ -350,13 +350,14 @@ function renderRolesTab() {
       Drag a role badge onto a category to set its visibility.
     </p>
     <div class="role-badges">
-      <div class="role-badge owner" draggable="true" data-role="owner">👑 Owner</div>
-      <div class="role-badge admin" draggable="true" data-role="admin">🛡️ Admin</div>
-      <div class="role-badge mod" draggable="true" data-role="mod">⚔️ Mod</div>
-      <div class="role-badge vip" draggable="true" data-role="vip">⭐ VIP</div>
-      <div class="role-badge basic" draggable="true" data-role="basic">👤 Basic</div>
-      <div class="role-badge visitor" draggable="true" data-role="visitor">👁️ Visitor</div>
-    </div>
+  <div class="role-badge owner" draggable="true" data-role="owner">👑 Owner</div>
+  <div class="role-badge admin" draggable="true" data-role="admin">🛡️ Admin</div>
+  <div class="role-badge mod" draggable="true" data-role="mod">⚔️ Mod</div>
+  <div class="role-badge jr-mod" draggable="true" data-role="jr-mod">🔨 Jr. Mod</div>
+  <div class="role-badge vip" draggable="true" data-role="vip">⭐ VIP</div>
+  <div class="role-badge basic" draggable="true" data-role="basic">⬤ Basic</div>
+  <div class="role-badge visitor" draggable="true" data-role="visitor">○ Visitor</div>
+</div>
     <div id="roleCategoryList"></div>
   `;
 
