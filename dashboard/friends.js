@@ -274,3 +274,12 @@ document.getElementById("addFriendBtn").addEventListener("click", () => {
         <div id="searchResults"></div>
         <div style="margin-top:15px; text-align:right;">
           <button onclick="document.getElementById('addFriendModal').rem
+
+          window.sendFriendRequest = sendFriendRequest;
+window.acceptFriend = acceptFriend;
+window.declineFriend = declineFriend;
+window.cancelRequest = cancelRequest;
+window.removeFriend = removeFriend;
+window.startDM = startDM;
+
+init();
