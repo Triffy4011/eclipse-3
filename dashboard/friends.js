@@ -174,28 +174,56 @@ async function loadPending() {
 
   const { data: incoming } = await client
     .from("friendships")
-    .select("*, sender:sender_id(id, full_name, avatar_url, role, is_online)")
+    .select("*")
     .eq("receiver_id", currentUser.id)
     .eq("status", "pending");
 
   const { data: outgoing } = await client
     .from("friendships")
-    .select("*, receiver:receiver_id(id, full_name, avatar_url, role)")
+    .select("*")
     .eq("sender_id", currentUser.id)
     .eq("status", "pending");
 
+  let incomingWithProfiles = [];
+  if (incoming && incoming.length > 0) {
+    const senderIds = incoming.map(f => f.sender_id);
+    const { data: senderProfiles } = await client
+      .from("profiles")
+      .select("id, full_name, avatar_url, role, is_online")
+      .in("id", senderIds);
+
+    incomingWithProfiles = incoming.map(f => ({
+      ...f,
+      sender: senderProfiles?.find(p => p.id === f.sender_id)
+    }));
+  }
+
+  let outgoingWithProfiles = [];
+  if (outgoing && outgoing.length > 0) {
+    const receiverIds = outgoing.map(f => f.receiver_id);
+    const { data: receiverProfiles } = await client
+      .from("profiles")
+      .select("id, full_name, avatar_url, role")
+      .in("id", receiverIds);
+
+    outgoingWithProfiles = outgoing.map(f => ({
+      ...f,
+      receiver: receiverProfiles?.find(p => p.id === f.receiver_id)
+    }));
+  }
+
   let html = "";
 
-  if (incoming && incoming.length > 0) {
-    html += `<div class="section-title">Incoming Requests — ${incoming.length}</div>`;
-    html += incoming.map(f => `
+  if (incomingWithProfiles.length > 0) {
+    html += `<div class="section-title">Incoming Requests — ${incomingWithProfiles.length}</div>`;
+    html += incomingWithProfiles.map(f => `
       <div class="user-card">
         <div class="user-avatar-wrap">
-          <img class="user-avatar" src="${f.sender.avatar_url || ''}">
-          <span class="status-dot ${f.sender.is_online ? 'online' : 'offline'}"></span>
+          <img class="user-avatar" src="${f.sender?.avatar_url || ''}">
+          <span class="status-dot ${f.sender?.is_online ? 'online' : 'offline'}"></span>
         </div>
         <div class="user-info">
-          <div class="user-name" style="color:${ROLE_COLORS[f.sender.role] || '#fff'}">${f.sender.full_name || 'User'}</div>
+          <div class="user-name" style="color:${ROLE_COLORS[f.sender?.role] || '#fff'}">${f.sender?.full_name || 'User'}</div>
           <div class="user-status">Wants to be your friend</div>
         </div>
         <div class="user-actions">
@@ -210,15 +238,15 @@ async function loadPending() {
     `).join("");
   }
 
-  if (outgoing && outgoing.length > 0) {
-    html += `<div class="section-title" style="margin-top:20px;">Outgoing Requests — ${outgoing.length}</div>`;
-    html += outgoing.map(f => `
+  if (outgoingWithProfiles.length > 0) {
+    html += `<div class="section-title" style="margin-top:20px;">Outgoing Requests — ${outgoingWithProfiles.length}</div>`;
+    html += outgoingWithProfiles.map(f => `
       <div class="user-card">
         <div class="user-avatar-wrap">
-          <img class="user-avatar" src="${f.receiver.avatar_url || ''}">
+          <img class="user-avatar" src="${f.receiver?.avatar_url || ''}">
         </div>
         <div class="user-info">
-          <div class="user-name" style="color:${ROLE_COLORS[f.receiver.role] || '#fff'}">${f.receiver.full_name || 'User'}</div>
+          <div class="user-name" style="color:${ROLE_COLORS[f.receiver?.role] || '#fff'}">${f.receiver?.full_name || 'User'}</div>
           <div class="user-status">Pending...</div>
         </div>
         <div class="user-actions">
