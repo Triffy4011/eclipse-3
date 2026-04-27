@@ -93,6 +93,12 @@ async function initDashboard() {
     }
     if (role === "owner") {
         navOwner?.classList.remove("hidden");
+
+if (role === "owner") {
+  navOwner?.classList.remove("hidden");
+  document.getElementById("nav-controlroom")?.classList.remove("hidden");
+}
+      
     }
 }
 
