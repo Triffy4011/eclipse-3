@@ -48,7 +48,6 @@ async function init() {
   setupNavRoles(profile.role);
   await loadConversations();
 
-  // Check if coming from a DM link
   const params = new URLSearchParams(window.location.search);
   const dmId = params.get("dm");
   if (dmId) openConversation(dmId);
@@ -124,13 +123,11 @@ async function loadConversations() {
     return;
   }
 
-  // Get all members for these conversations
   const { data: allMembers } = await client
     .from("conversation_members")
     .select("conversation_id, user_id")
     .in("conversation_id", convIds);
 
-  // Get all profiles for members
   const allUserIds = [...new Set(allMembers.map(m => m.user_id))];
   const { data: allProfiles } = await client
     .from("profiles")
@@ -173,9 +170,9 @@ async function loadConversations() {
       <div class="conv-item ${currentConvId === conv.id ? 'active' : ''}"
         onclick="openConversation('${conv.id}')">
         <div class="conv-avatar-wrap">
-          <div class="conv-avatar" style="background:#4255ff; display:flex; align-items:center; justify-content:center; font-size:18px;">
-            ${conv.icon || '💬'}
-          </div>
+          <img class="conv-avatar" src="${conv.icon || ''}" 
+            onerror="this.style.display='none'" 
+            style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
         </div>
         <div class="conv-info">
           <div class="conv-name">${conv.name || 'Group Chat'}</div>
@@ -192,23 +189,19 @@ async function loadConversations() {
 async function openConversation(convId) {
   currentConvId = convId;
 
-  // Unsubscribe from previous
   if (messageSubscription) {
     client.removeChannel(messageSubscription);
   }
 
-  // Update active state in list
   document.querySelectorAll(".conv-item").forEach(item => item.classList.remove("active"));
   document.querySelector(`[onclick="openConversation('${convId}')"]`)?.classList.add("active");
 
-  // Get conversation details
   const { data: conv } = await client
     .from("conversations")
     .select("*")
     .eq("id", convId)
     .single();
 
-  // Get members
   const { data: members } = await client
     .from("conversation_members")
     .select("user_id")
@@ -224,32 +217,40 @@ async function openConversation(convId) {
     ? profiles.find(p => p.id !== currentUser.id)
     : null;
 
-  // Render chat area
+  const headerAvatar = conv.type === "dm"
+    ? `<img class="chat-header-avatar" src="${otherProfile?.avatar_url || ''}" onerror="this.src=''">`
+    : `<img class="chat-header-avatar" src="${conv.icon || ''}" onerror="this.src=''" style="border-radius:50%; object-fit:cover;">`;
+
+  const headerName = conv.type === "dm"
+    ? `<h3 style="color:${ROLE_COLORS[otherProfile?.role] || '#fff'}">${otherProfile?.full_name || 'Unknown'}</h3>`
+    : `<h3>${conv.name || 'Group Chat'}</h3>`;
+
+  const headerStatus = conv.type === "dm"
+    ? `<p>${otherProfile?.is_online ? '🟢 Online' : '⚫ Offline'}</p>`
+    : `<p>${memberIds.length} members</p>`;
+
   const chatArea = document.getElementById("chatArea");
   chatArea.innerHTML = `
     <div class="chat-header">
-      <img class="chat-header-avatar" src="${otherProfile?.avatar_url || ''}" onerror="this.src=''">
+      ${headerAvatar}
       <div class="chat-header-info">
-        <h3 style="color:${ROLE_COLORS[otherProfile?.role] || '#fff'}">
-          ${conv.type === "dm" ? otherProfile?.full_name || "Unknown" : conv.name || "Group Chat"}
-        </h3>
-        <p>${conv.type === "dm" ? (otherProfile?.is_online ? "🟢 Online" : "⚫ Offline") : `${memberIds.length} members`}</p>
+        ${headerName}
+        ${headerStatus}
       </div>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
-      <textarea class="chat-input" id="chatInput" placeholder="Message ${conv.type === "dm" ? otherProfile?.full_name || "..." : conv.name || "group"}..." rows="1"></textarea>
+      <textarea class="chat-input" id="chatInput" 
+        placeholder="Message ${conv.type === 'dm' ? otherProfile?.full_name || '...' : conv.name || 'group'}..." 
+        rows="1"></textarea>
       <button class="send-btn" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   `;
 
-  // Load messages
   await loadMessages(convId, profiles);
 
-  // Send on button click
   document.getElementById("sendBtn").addEventListener("click", () => sendMessage(convId, profiles));
 
-  // Send on Enter (Shift+Enter for new line)
   document.getElementById("chatInput").addEventListener("keydown", e => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -257,7 +258,6 @@ async function openConversation(convId) {
     }
   });
 
-  // Realtime subscription
   messageSubscription = client
     .channel(`messages:${convId}`)
     .on("postgres_changes", {
@@ -307,7 +307,7 @@ function appendMessage(msg, sender) {
   const time = new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   const div = document.createElement("div");
-  div.className = `message-group`;
+  div.className = "message-group";
   div.innerHTML = `
     <div class="message-row ${isOwn ? 'own-row' : ''}">
       <img class="message-avatar" src="${sender?.avatar_url || ''}" onerror="this.src=''">
